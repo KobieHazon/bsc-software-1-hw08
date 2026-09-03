@@ -5,64 +5,59 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-
 public class HashMapHistogramTester {
-	public static void main(String[] args){
-		List<Integer> intLst = Arrays.asList(1, 2, 1, 2, 3, 4, 3, 1);
-		IHistogram<Integer> intHist = new HashMapHistogram<>();
-		for (int i : intLst){
-			intHist.addItem(i);
-		}
-		if (intHist.getCountForItem(1) != 3){
-			System.out.println("ERROR 1");
-		}
-		if (intHist.getCountForItem(5) != 0){
-			System.out.println("ERROR 2");
-		}
-		Iterator<Integer> intHistIt = intHist.iterator();
-		List<Integer> tmpList = new ArrayList<Integer>();
-		while (intHistIt.hasNext()){
-			int x = intHistIt.next();
-			tmpList.add(x);
-			
-		}
-		if (tmpList.get(0) != 1){
-			System.out.println("ERROR 3");
-		}
-		if (tmpList.size() != 4){
-			System.out.println("ERROR 4");
-		}
-		
-		IHistogram<String> stringHist = new HashMapHistogram<>();
-		try{
-			stringHist.addItemKTimes("bb", 5);
-			stringHist.addItemKTimes("aa", 5);
-		}
-		catch (IllegalKValue exp){
-			System.out.println("ERROR 5");
-		}
-		stringHist.addItem("abc");
-		stringHist.addItem("de");
-		stringHist.addItem("abc");
-		stringHist.addItem("de");
-		stringHist.addItem("abc");
-		stringHist.addItem("de");
-		stringHist.addItem("de");
-		if (stringHist.getCountForItem("abc") != 3){
-			System.out.println("ERROR 6");
-		}
-		Iterator<String> it = stringHist.iterator();
-		/* the order of the returned items should be: "aa", "bb", "de", "abc"
-		 * aa" and "bb" both appear 5 times, so in this case we sort by the natural order
-		 * of the elements "aa" and "bb". This is why "aa" should appear before "bb"
-		 */
-		if (!it.next().equals("aa")){
-			System.out.println("ERROR 7");
-		}
-		if (!it.next().equals("bb")){
-			System.out.println("ERROR 8");
-		}
-		
-		System.out.println("done!");
-	}
+    public static void main(String[] args) {
+        List<Integer> values = Arrays.asList(1, 2, 1, 2, 3, 4, 3, 1);
+        IHistogram<Integer> histogram = new HashMapHistogram<>();
+        for (int value : values) {
+            histogram.addItem(value);
+        }
+        if (histogram.getCountForItem(1) != 3) {
+            printError(1);
+        }
+        if (histogram.getCountForItem(5) != 0) {
+            printError(2);
+        }
+        Iterator<Integer> iterator = histogram.iterator();
+        List<Integer> ordered = new ArrayList<>();
+        while (iterator.hasNext()) {
+            ordered.add(iterator.next());
+        }
+        if (ordered.get(0) != 1) {
+            printError(3);
+        }
+        if (ordered.size() != 4) {
+            printError(4);
+        }
+
+        IHistogram<String> stringHistogram = new HashMapHistogram<>();
+        try {
+            stringHistogram.addItemKTimes("bb", 5);
+            stringHistogram.addItemKTimes("aa", 5);
+        } catch (IllegalKValue e) {
+            printError(5);
+        }
+        stringHistogram.addItem("abc");
+        stringHistogram.addItem("de");
+        stringHistogram.addItem("abc");
+        stringHistogram.addItem("de");
+        stringHistogram.addItem("abc");
+        stringHistogram.addItem("de");
+        stringHistogram.addItem("de");
+        if (stringHistogram.getCountForItem("abc") != 3) {
+            printError(6);
+        }
+        Iterator<String> stringIterator = stringHistogram.iterator();
+        if (!stringIterator.next().equals("aa")) {
+            printError(7);
+        }
+        if (!stringIterator.next().equals("bb")) {
+            printError(8);
+        }
+        System.out.println("done!");
+    }
+
+    private static void printError(int number) {
+        System.out.println("ERROR " + number);
+    }
 }

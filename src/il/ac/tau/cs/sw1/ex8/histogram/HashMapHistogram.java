@@ -1,94 +1,96 @@
 package il.ac.tau.cs.sw1.ex8.histogram;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
-/**************************************
- *  Add your code to this class !!!   *
- **************************************/
-public class HashMapHistogram<T extends Comparable<T>> implements IHistogram<T>{
+public class HashMapHistogram<T extends Comparable<T>> implements IHistogram<T> {
+    private final Map<T, Integer> counts = new HashMap<>();
 
-	private java.util.Map<T, Integer> hashMap = new java.util.HashMap<T, Integer>();
+    @Override
+    public void addItem(T item) {
+        Objects.requireNonNull(item, "item");
+        counts.put(item, getCountForItem(item) + 1);
+    }
 
-	@Override
-	public void addItem(T item) {
-		if (hashMap.containsKey(item)) {
-			hashMap.put(item, hashMap.get(item)+1);
-		}
-		else {
-			hashMap.put(item, 1);
-		}
-	}
+    @Override
+    public void addItemKTimes(T item, int k) throws IllegalKValue {
+        Objects.requireNonNull(item, "item");
+        validateK(k);
+        if (k == 0) {
+            return;
+        }
+        counts.put(item, getCountForItem(item) + k);
+    }
 
-	@Override
-	public void addItemKTimes(T item, int k) throws IllegalKValue {
-		if (k < 0) {
-			throw new IllegalKValue(k);
-		}
-		
-		if (hashMap.containsKey(item)) {
-			hashMap.put(item, hashMap.get(item)+k);
-		}
-		else {
-			hashMap.put(item, k);
-		}
-	}
+    @Override
+    public int getCountForItem(T item) {
+        return counts.getOrDefault(item, 0);
+    }
 
-	@Override
-	public int getCountForItem(T item) {
-		return hashMap.containsKey(item) ? hashMap.get(item) : 0;
-	}
+    @Override
+    public void addAll(Collection<T> items) {
+        for (T item : items) {
+            addItem(item);
+        }
+    }
 
-	@Override
-	public void addAll(Collection<T> items) {
-		for (T item: items) {
-			addItem(item);
-		}
-	}
+    @Override
+    public void clear() {
+        counts.clear();
+    }
 
-	@Override
-	public void clear() {
-		hashMap.clear();
-	}
+    @Override
+    public Set<T> getItemsSet() {
+        return new HashSet<>(counts.keySet());
+    }
 
-	@Override
-	public Set<T> getItemsSet() {
-		return hashMap.keySet();
-	}
+    @Override
+    public Iterator<T> iterator() {
+        List<T> keys = new ArrayList<>(counts.keySet());
+        keys.sort(new HashMapHistogramComparator<>(counts));
+        return new HashMapHistogramIterator<>(keys);
+    }
 
-	@Override
-	public Iterator<T> iterator() {
-		java.util.List<T> keys = new java.util.ArrayList<T>(hashMap.keySet());
-		java.util.Collections.sort(keys, new HashMapHistogramComparator<T>(hashMap));
-		return new HashMapHistogramIterator<T>(keys);
-	}
+    @Override
+    public void removeItem(T item) throws IllegalItem {
+        int oldCount = getCountForItem(item);
+        if (oldCount == 0) {
+            throw new IllegalItem();
+        }
+        if (oldCount == 1) {
+            counts.remove(item);
+        } else {
+            counts.put(item, oldCount - 1);
+        }
+    }
 
-	@Override
-	public void removeItem(T item) throws IllegalItem{
-		int oldVal = getCountForItem(item);
-		if (oldVal == 0) {
-			throw new IllegalItem();
-		}
-		else if (oldVal == 1) {
-			hashMap.remove(item);
-		}
-		else {
-			hashMap.put(item, oldVal-1);
-		}
-	}
+    @Override
+    public void removeItemKTimes(T item, int k) throws IllegalKValue {
+        validateK(k);
+        int oldCount = getCountForItem(item);
+        if (k > oldCount) {
+            throw new IllegalKValue(k);
+        }
+        if (k == 0) {
+            return;
+        }
+        if (k == oldCount) {
+            counts.remove(item);
+        } else {
+            counts.put(item, oldCount - k);
+        }
+    }
 
-	@Override
-	public void removeItemKTimes(T item, int k) throws IllegalKValue {
-		int oldVal = getCountForItem(item);
-		if (k > oldVal) {
-			throw new IllegalKValue(k);
-		}
-		else if (k == oldVal && oldVal != 0) {
-			hashMap.remove(item);
-		}
-		else {
-			hashMap.put(item, hashMap.get(item) - k);
-		}
-	}
+    private void validateK(int k) throws IllegalKValue {
+        if (k < 0) {
+            throw new IllegalKValue(k);
+        }
+    }
 }

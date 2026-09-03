@@ -1,26 +1,21 @@
 package il.ac.tau.cs.sw1.ex8.histogram;
 
 import java.util.Comparator;
+import java.util.Map;
 
 public class HashMapHistogramComparator<T extends Comparable<T>> implements Comparator<T> {
+    private final Map<T, Integer> counts;
 
-	private java.util.Map<T, Integer> hashMap;
-	
-	public HashMapHistogramComparator(java.util.Map<T, Integer> hashMap) {
-		this.hashMap = hashMap;
-	}
-	
-	@Override
-	public int compare(T o1, T o2) {
-		int val1 = hashMap.get(o1);
-		int val2 = hashMap.get(o2);
-		if (val1 > val2) {
-			return -1;
-		}
-		if (val2 > val1) {
-			return 1;
-		}
-		return o1.compareTo(o2);
-	}
+    public HashMapHistogramComparator(Map<T, Integer> counts) {
+        this.counts = counts;
+    }
 
+    @Override
+    public int compare(T left, T right) {
+        int countComparison = Integer.compare(counts.get(right), counts.get(left));
+        if (countComparison != 0) {
+            return countComparison;
+        }
+        return left.compareTo(right);
+    }
 }

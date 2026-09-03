@@ -3,15 +3,20 @@ package il.ac.tau.cs.sw1.ex8.histogram;
 import java.util.Collection;
 import java.util.Set;
 
-/* don't change this interface */
-public interface IHistogram<T> extends Iterable<T>{
-	
-	public void addItem(T item);
-	public void removeItem(T item) throws IllegalItem;
-	public void addItemKTimes(T item, int k) throws IllegalKValue;
-	public void removeItemKTimes(T item, int k) throws IllegalKValue;
-	public int getCountForItem(T item);
-	public void addAll(Collection<T> items);
-	public void clear();
-	public Set<T> getItemsSet();
+public interface IHistogram<T> extends Iterable<T> {
+    void addItem(T item);
+
+    void removeItem(T item) throws IllegalItem;
+
+    void addItemKTimes(T item, int k) throws IllegalKValue;
+
+    void removeItemKTimes(T item, int k) throws IllegalKValue;
+
+    int getCountForItem(T item);
+
+    void addAll(Collection<T> items);
+
+    void clear();
+
+    Set<T> getItemsSet();
 }

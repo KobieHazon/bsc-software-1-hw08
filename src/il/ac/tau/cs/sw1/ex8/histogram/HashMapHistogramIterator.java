@@ -1,32 +1,32 @@
 package il.ac.tau.cs.sw1.ex8.histogram;
 
 import java.util.Iterator;
+import java.util.List;
+import java.util.NoSuchElementException;
 
+public class HashMapHistogramIterator<T extends Comparable<T>> implements Iterator<T> {
+    private final List<T> items;
+    private int index = 0;
 
-/**************************************
- *  Add your code to this class !!!   *
- **************************************/
-public class HashMapHistogramIterator<T extends Comparable<T>> implements Iterator<T>{
-	
-	private java.util.List<T> items;
-	private int cnt;
-	
-	public HashMapHistogramIterator(java.util.List<T> items) {
-		this.items = items;
-	}
-	
-	@Override
-	public boolean hasNext() {
-		return cnt != items.size();
-	}
+    public HashMapHistogramIterator(List<T> items) {
+        this.items = items;
+    }
 
-	@Override
-	public T next() {
-		return items.get(cnt++);
-	}
+    @Override
+    public boolean hasNext() {
+        return index < items.size();
+    }
 
-	@Override
-	public void remove() {
-		throw new UnsupportedOperationException(); //no need to change this
-	}
+    @Override
+    public T next() {
+        if (!hasNext()) {
+            throw new NoSuchElementException();
+        }
+        return items.get(index++);
+    }
+
+    @Override
+    public void remove() {
+        throw new UnsupportedOperationException();
+    }
 }

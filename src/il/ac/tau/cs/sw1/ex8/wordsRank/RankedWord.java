@@ -1,63 +1,53 @@
 package il.ac.tau.cs.sw1.ex8.wordsRank;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
+class RankedWord {
+    enum rankType {average, min, max}
 
+    private final String word;
+    private final Map<String, Integer> ranksForFile;
+    private final int average;
+    private final int min;
+    private final int max;
 
-/*********************************************************************************
- *   This is a complete implementation.                                          *
- *   you can add more code or alter the existing code, but                       *
- *   keep in mind that this class is designed for the purpose of this exercise   *
- *   you you should be able to use it just as it is                              *
- *********************************************************************************/
+    RankedWord(String word, Map<String, Integer> ranks) {
+        this.word = word;
+        this.ranksForFile = new HashMap<>(ranks);
+        this.min = Collections.min(ranksForFile.values());
+        this.max = Collections.max(ranksForFile.values());
+        int sum = 0;
+        for (Integer rank : ranksForFile.values()) {
+            sum += rank;
+        }
+        this.average = (int) Math.round(((double) sum) / ranksForFile.size());
+    }
 
-class RankedWord{
-	
-	public static enum rankType {average, min, max};
+    String getWord() {
+        return word;
+    }
 
-	
-	private String word;
-	private Map<String, Integer> ranksForFile;
-	private int average;
-	private int min;
-	private int max;
-	
-	public RankedWord(String word, Map<String, Integer> ranks){
-		this.word = word;
-		this.ranksForFile = ranks;
-		this.min = Collections.min(ranksForFile.values()); // retrieve the minimal value in a collection
-		this.max = Collections.max(ranksForFile.values()); // retrieve the maxinum value in a collection
-		int sum = 0;
-		for (Integer rank : ranksForFile.values()){
-			sum += rank;
-		}
-		this.average = (int)Math.round(((double)sum)/ranksForFile.size());
-	}
+    Map<String, Integer> getRanksForFile() {
+        return new HashMap<>(ranksForFile);
+    }
 
-	public String getWord() {
-		return word;
-	}
+    int getRankByType(rankType rankType) {
+        switch (rankType) {
+            case average:
+                return average;
+            case min:
+                return min;
+            case max:
+            default:
+                return max;
+        }
+    }
 
-	public Map<String, Integer> getRanksForFile() {
-		return ranksForFile;
-	}
-
-	public int getRankByType(rankType rType){
-		// This is how you use an enum in a switch/case block
-		switch(rType){
-		case average:
-			return average;
-		case min:
-			return min;
-		default: //case max
-			return max;
-		}
-	}
-
-	@Override
-	public String toString() {
-		return "RankedWord [word=" + word + ", ranksForFile=" + ranksForFile + ", average=" + average + ", min="
-				+ min + ", max=" + max + "]";
-	}
+    @Override
+    public String toString() {
+        return "RankedWord [word=" + word + ", ranksForFile=" + ranksForFile + ", average=" + average
+                + ", min=" + min + ", max=" + max + "]";
+    }
 }
