@@ -1,9 +1,6 @@
 # BSc Software 1 - Homework 8
 
 - Course: BSc Computer Science.
-- Available copy: May 2018.
-- Assignment brief: The matching Homework 8 handout was not found.
-- Maintenance changes: the current version adds synthetic fixtures, strict local validation, deterministic file ordering, safer histogram edge-case handling, and a case-normalization fix in file-rank lookup.
 
 ## Contents
 
